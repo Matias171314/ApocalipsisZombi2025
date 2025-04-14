@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author matin
  */
 public class Tunel {
-    private final int id;
+    private final int tunelID;
     private final Lock lock = new ReentrantLock();
     private final Condition puedeEntrar = lock.newCondition();
     private final Condition puedeSalir = lock.newCondition();
@@ -24,21 +24,21 @@ public class Tunel {
     private int esperandoSalir = 0;
     private boolean ocupado = false;
 
-    public Tunel(int id) {
-        this.id = id;
+    public Tunel(int tunelID) {
+        this.tunelID = tunelID;
         this.barreraGrupo = new CyclicBarrier(3);
     }
     
-    public void esperarGrupoParaSalir(String humanoId) throws InterruptedException {
+    public void esperarGrupoParaSalir(String humanoID) throws InterruptedException {
         try {
-            System.out.println( humanoId + " espera grupo para Tunel " + id);
+            System.out.println( humanoID + " espera grupo para Tunel " + tunelID);
             barreraGrupo.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }    
     
-    public void entrarRefugio (String humanoId) throws InterruptedException {
+    public void entrarRefugio (String humanoID) throws InterruptedException {
         lock.lock();
         try{
             esperandoEntrar ++;
@@ -48,7 +48,7 @@ public class Tunel {
             esperandoEntrar --;
             ocupado = true;
             
-            System.out.println(humanoId + " entra al Tunel " + id + " hacia el refugio.");
+            System.out.println(humanoID + " entra al Tunel " + tunelID + " hacia el refugio.");
             Thread.sleep(1000);
             ocupado = false;
             
@@ -72,7 +72,7 @@ public class Tunel {
             esperandoSalir--;
             ocupado = true;
 
-            System.out.println(humanoId + " sale por el Tunel " + id + " hacia el exterior.");
+            System.out.println(humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
             Thread.sleep(1000);
             ocupado = false;
 
@@ -87,6 +87,6 @@ public class Tunel {
     }
     
     public int getId() {
-        return id;
+        return tunelID;
     }
 }
