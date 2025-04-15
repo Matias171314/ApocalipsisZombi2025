@@ -8,6 +8,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 
 /**
  *
@@ -48,7 +49,7 @@ public class Tunel {
             esperandoEntrar --;
             ocupado = true;
             
-            System.out.println(humanoID + " entra al Tunel " + tunelID + " hacia el refugio.");
+            LoggerApocalipsis.registrar(humanoID + " entra al Tunel " + tunelID + " hacia el refugio.");
             Thread.sleep(1000);
             ocupado = false;
             
@@ -72,7 +73,7 @@ public class Tunel {
             esperandoSalir--;
             ocupado = true;
 
-            System.out.println(humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
+            LoggerApocalipsis.registrar(humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
             Thread.sleep(1000);
             ocupado = false;
 
