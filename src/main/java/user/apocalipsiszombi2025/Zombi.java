@@ -24,13 +24,12 @@ public class Zombi extends Thread {
     
     @Override
     public void run() {
-        while(true) {
-            try {
+        try {
+            while(true) {
                 patrullar();
             }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     

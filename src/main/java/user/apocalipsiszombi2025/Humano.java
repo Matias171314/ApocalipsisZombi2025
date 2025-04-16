@@ -33,18 +33,17 @@ public class Humano extends Thread {
     }
     
     private void explorarMundo() throws InterruptedException {
-        int tunelId = rand.nextInt(tuneles.length);
-        Tunel tunelElegido = tuneles[tunelId];
+        int camino = rand.nextInt(tuneles.length);
+        Tunel tunelElegido = tuneles[camino];
 
-        LoggerApocalipsis.registrar("El humano " + humanoID + " quiere salir por el túnel " + tunelId);
+        LoggerApocalipsis.registrar("El humano " + humanoID + " quiere salir por el túnel " + camino);
         tunelElegido.esperarGrupoParaSalir(humanoID);
         tunelElegido.salirRefugio(humanoID);
 
         LoggerApocalipsis.registrar("El humano " + humanoID + " ha llegado al exterior.");
 
-        // Simular exploración en zona insegura (3 a 5 segundos)
-        int zonaID = rand.nextInt(zonasInseguras.length);
-        Exterior zona = zonasInseguras[(zonaID)];
+        // Simular exploración en zona insegura (3 a 5 segundos);
+        Exterior zona = zonasInseguras[(camino)];
         zona.entrarHumano(this);
         Thread.sleep(rand.nextInt(3000, 5000));
 
@@ -53,7 +52,6 @@ public class Humano extends Thread {
 
         if (fueAtacado) {
             LoggerApocalipsis.registrar("El humano " + humanoID + " fue atacado por un zombi.");
-
             boolean defensaExitosa = Math.random() < (2.0 / 3); // 2 de cada 3 sobrevive
             if (defensaExitosa) {
                 serHerido();
@@ -61,7 +59,6 @@ public class Humano extends Thread {
             } else {
                 morir();
                 LoggerApocalipsis.registrar("El humano " + humanoID + " ha muerto en la zona exterior.");
-                // Aquí se podría notificar al sistema para convertirlo en zombi
                 return;
             }
         } else {
@@ -70,22 +67,17 @@ public class Humano extends Thread {
 
         zona.salirHumano(this);
         // Regresa al refugio por el mismo túnel (tiene prioridad)
-        LoggerApocalipsis.registrar("El humano " + humanoID + " regresa al refugio por el túnel " + tunelId);
+        LoggerApocalipsis.registrar("El humano " + humanoID + " regresa al refugio por el túnel " + camino);
         tunelElegido.entrarRefugio(humanoID);
     }
     
     private void descansarYComer() throws InterruptedException {
         LoggerApocalipsis.registrar("El humano " + humanoID + " entra a la ZONA DE DESCANSO.");
-        Thread.sleep(rand.nextInt(2000, 4000)); // 2 a 4 seg
-
-        LoggerApocalipsis.registrar("El humano " + humanoID + " entra al COMEDOR.");
-        //refugio.comedorEntrar(id); // pseudocódigo, lo implementamos luego
-        Thread.sleep(rand.nextInt(3000, 5000)); // 3 a 5 seg
-        //refugio.comedorSalir(id);
+        refugio.descansar(humanoID, herido);
+        refugio.comer(humanoID);
 
         if (herido) {
             LoggerApocalipsis.registrar("El humano " + humanoID + " está herido y vuelve a descansar.");
-            Thread.sleep(rand.nextInt(3000, 5000)); // 3 a 5 seg
             herido = false;
         }
     }
@@ -104,6 +96,13 @@ public class Humano extends Thread {
     
     public void morir() {
         vivo = false;
+        LoggerApocalipsis.registrar("El humano " + humanoID + " ha muerto.");
+
+        // Crear zombi con mismo número
+        String idZombi = humanoID.replace('H', 'Z');
+        Zombi nuevoZombi = new Zombi(idZombi, zonasInseguras);
+        LoggerApocalipsis.registrar("El humano " + humanoID + " ha renacido como zombi " + idZombi);
+        nuevoZombi.start();
     }
     
     @Override
@@ -112,7 +111,9 @@ public class Humano extends Thread {
             while (vivo) {
                 zonaComun();
                 explorarMundo();
-                //regresarAlRefugio(); 
+                if (!vivo) {
+                    break;
+                }
                 descansarYComer();
             }
         } catch (InterruptedException e) {

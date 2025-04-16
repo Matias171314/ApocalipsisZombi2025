@@ -32,7 +32,7 @@ public class Tunel {
     
     public void esperarGrupoParaSalir(String humanoID) throws InterruptedException {
         try {
-            System.out.println( humanoID + " espera grupo para Tunel " + tunelID);
+            System.out.println( "El humano " + humanoID + " espera grupo para Tunel " + tunelID);
             barreraGrupo.await();
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class Tunel {
             esperandoEntrar --;
             ocupado = true;
             
-            LoggerApocalipsis.registrar(humanoID + " entra al Tunel " + tunelID + " hacia el refugio.");
+            LoggerApocalipsis.registrar("El humano " + humanoID + " entra al Tunel " + tunelID + " hacia el refugio.");
             Thread.sleep(1000);
             ocupado = false;
             
@@ -73,7 +73,7 @@ public class Tunel {
             esperandoSalir--;
             ocupado = true;
 
-            LoggerApocalipsis.registrar(humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
+            LoggerApocalipsis.registrar( "El humano " + humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
             Thread.sleep(1000);
             ocupado = false;
 

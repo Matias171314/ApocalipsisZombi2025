@@ -4,8 +4,9 @@
 
 package user.apocalipsiszombi2025;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 
 /**
  *
