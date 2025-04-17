@@ -34,41 +34,38 @@ public class Humano extends Thread {
     
     private void explorarMundo() throws InterruptedException {
         int camino = rand.nextInt(tuneles.length);
-        Tunel tunelElegido = tuneles[camino];
+        
+        for (int i=0; i < tuneles.length; i++) {
+            int index = (camino + i) % tuneles.length;
+            Tunel tunelElegido = tuneles[index];
+            
+            LoggerApocalipsis.registrar("El humano " + humanoID + " quiere salir por el túnel " + camino);
+            
+            tunelElegido.esperarGrupoParaSalir(humanoID);
 
-        LoggerApocalipsis.registrar("El humano " + humanoID + " quiere salir por el túnel " + camino);
-        tunelElegido.esperarGrupoParaSalir(humanoID);
-        tunelElegido.salirRefugio(humanoID);
+            // Sale al exterior si forma grupo
+            tunelElegido.salirRefugio(humanoID);
+            LoggerApocalipsis.registrar("El humano " + humanoID + " ha llegado al exterior.");
 
-        LoggerApocalipsis.registrar("El humano " + humanoID + " ha llegado al exterior.");
+            // Entra en la zona correspondiente al túnel usado
+            Exterior zona = zonasInseguras[index];
+            zona.entrarHumano(this);
+            
+            Thread.sleep(rand.nextInt(3000, 5000)); // explora
+            zona.salirHumano(this);
 
-        // Simular exploración en zona insegura (3 a 5 segundos);
-        Exterior zona = zonasInseguras[(camino)];
-        zona.entrarHumano(this);
-        Thread.sleep(rand.nextInt(3000, 5000));
-
-        // Simular ataque (esto luego será mejorado con interacción real con zombis)
-        boolean fueAtacado = Math.random() < 0.3; // 30% de posibilidad de ser atacado
-
-        if (fueAtacado) {
-            LoggerApocalipsis.registrar("El humano " + humanoID + " fue atacado por un zombi.");
-            boolean defensaExitosa = Math.random() < (2.0 / 3); // 2 de cada 3 sobrevive
-            if (defensaExitosa) {
-                serHerido();
-                LoggerApocalipsis.registrar("El humano " + humanoID + " se defendió con éxito y quedó herido.");
-            } else {
-                morir();
-                LoggerApocalipsis.registrar("El humano " + humanoID + " ha muerto en la zona exterior.");
+            if (!vivo) {
+                LoggerApocalipsis.registrar("El humano " + humanoID + " ha muerto y no regresa al refugio.");
                 return;
             }
-        } else {
-            LoggerApocalipsis.registrar("El humano " + humanoID + " ha recolectado comida y no fue atacado.");
+            
+            LoggerApocalipsis.registrar("El humano " + humanoID + " regresa al refugio por el túnel " + camino);
+            tunelElegido.entrarRefugio(humanoID);
+            return; // terminó su viaje con éxito
         }
-
-        zona.salirHumano(this);
-        // Regresa al refugio por el mismo túnel (tiene prioridad)
-        LoggerApocalipsis.registrar("El humano " + humanoID + " regresa al refugio por el túnel " + camino);
-        tunelElegido.entrarRefugio(humanoID);
+        
+        // Si no pudo usar ningún túnel
+        LoggerApocalipsis.registrar("El humano " + humanoID + " no pudo salir por ningún túnel esta vez.");
     }
     
     private void descansarYComer() throws InterruptedException {

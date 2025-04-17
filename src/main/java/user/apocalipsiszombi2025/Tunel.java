@@ -32,7 +32,7 @@ public class Tunel {
     
     public void esperarGrupoParaSalir(String humanoID) throws InterruptedException {
         try {
-            System.out.println( "El humano " + humanoID + " espera grupo para Tunel " + tunelID);
+            LoggerApocalipsis.registrar( "El humano " + humanoID + " espera grupo para Tunel " + tunelID);
             barreraGrupo.await();
         } catch (Exception e) {
             e.printStackTrace();

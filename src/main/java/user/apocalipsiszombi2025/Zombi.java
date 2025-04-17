@@ -35,37 +35,46 @@ public class Zombi extends Thread {
     
     private void patrullar () throws InterruptedException {
         int zonaID = rand.nextInt(zonasInseguras.length);
-        Exterior zona = zonasInseguras[zonaID];
         
-        LoggerApocalipsis.registrar("El zombi " + zombiID + " entra en la zona insegura " + zona.getID());
-        
-        Humano objetivo = zona.elegirHumano();
-        
-        if (objetivo != null && objetivo.estaVivo()) {
-            LoggerApocalipsis.registrar("El zombi " + zombiID + " ataca al humano " + objetivo.getId());
-            
-            Thread.sleep(rand.nextInt(500, 1500));
-            
-            boolean defensaExitosa = rand.nextDouble() < (2.0 / 3);
-            
-            if (defensaExitosa) {
-                objetivo.serHerido();
-                LoggerApocalipsis.registrar("El humano " + objetivo.getId() + " se defendió del zombi " + zombiID);
-            } else {
-                objetivo.morir();
-                muertes++;
-                LoggerApocalipsis.registrar("El zombi " + zombiID + " mató al humano " + objetivo.getId() +
-                        " (muertes: " + muertes + ")");
-                zona.notificarMuerte(objetivo);
-                // zona.convertirAHumanoEnZombi(objetivo); // método por implementar
-            }
-            Thread.sleep(rand.nextInt(500, 1000)); // espera corta tras el ataque
-        } else {
-            LoggerApocalipsis.registrar("El zombi " + zombiID + " no encontró humanos. Espera...");
-            Thread.sleep(rand.nextInt(2000, 3000)); // espera al no encontrar nadie
+        for (int i = 0; i < zonasInseguras.length; i++) {
+            int index = (zonaID + i) % zonasInseguras.length; // recorrido circular
+            Exterior zona = zonasInseguras[index];
+
+            LoggerApocalipsis.registrar("El zombi " + zombiID + " patrulla la zona " + zona.getID());
+
+            Humano objetivo = zona.elegirHumano();
+            if (objetivo != null && objetivo.estaVivo()) {
+                atacar(objetivo, zona);
+                return;
         }
     }
+
+    LoggerApocalipsis.registrar("El zombi " + zombiID + " no encontró humanos en ninguna zona. Espera...");
+    Thread.sleep(rand.nextInt(2000, 3000));
+        
+    }
     
+    private void atacar(Humano objetivo, Exterior zona) throws InterruptedException {
+        LoggerApocalipsis.registrar("El zombi " + zombiID + " ataca al humano " + objetivo.getID());
+
+        Thread.sleep(rand.nextInt(500, 1500));
+
+        boolean defensaExitosa = rand.nextDouble() < (2.0 / 3);
+
+        if (defensaExitosa) {
+            objetivo.serHerido();
+            LoggerApocalipsis.registrar("El humano " + objetivo.getID() + " se defendió del zombi " + zombiID);
+        } else {
+            objetivo.morir();
+            muertes++;
+            LoggerApocalipsis.registrar("El zombi " + zombiID + " mató al humano " + objetivo.getID()
+                    + " (muertes: " + muertes + ")");
+            zona.notificarMuerte(objetivo);
+        }
+
+        Thread.sleep(rand.nextInt(500, 1000)); // pausa tras el ataque
+    }
+
     public String getID() {
         return zombiID;
     }

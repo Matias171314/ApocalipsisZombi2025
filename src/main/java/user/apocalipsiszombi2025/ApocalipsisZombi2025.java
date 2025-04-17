@@ -13,7 +13,7 @@ import java.util.Random;
  * @author matin
  */
 public class ApocalipsisZombi2025 {
-    private static final int NUM_HUMANOS = 100; // Puedes poner 10_000 si quieres escalar
+    private static final int NUM_HUMANOS = 100;
     private static final int NUM_TUNELES = 4;
     private static final int NUM_ZONAS = 4;
     private static final Random rand = new Random();
