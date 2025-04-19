@@ -4,17 +4,18 @@
  */
 package user.apocalipsiszombi2025;
 
-import java.util.concurrent.Semaphore;
 import user.apocalipsiszombi2025.util.LoggerApocalipsis;
+import java.util.concurrent.Semaphore;
 import java.util.Random;
+import user.apocalipsiszombi2025.util.Config;
 
 /**
  *
  * @author matin
  */
 public class Refugio {
-    private final Semaphore comedor = new Semaphore(5); // 5 plazas en el comedor
-    private int comidaDisponible = 50; // cantidad inicial de raciones
+    private final Semaphore comedor = new Semaphore(Config.NUM_PLATOS_COMEDOR); // 5 plazas en el comedor
+    private int comidaDisponible = Config.COMIDA_INICIAL; // cantidad inicial de raciones
     private final Object lockComida = new Object(); // para proteger acceso a la comida
     private Random rand = new Random();
     
@@ -28,7 +29,7 @@ public class Refugio {
         comedor.acquire();
         LoggerApocalipsis.registrar("El humano " + humanoID + " entra al comedor");
         
-        Thread.sleep(1000);
+        Thread.sleep(Config.TIEMPO_COMER);
         
         synchronized (lockComida) { 
             if (comidaDisponible > 0) {
@@ -39,7 +40,7 @@ public class Refugio {
             }
         }
         
-        Thread.sleep(1000);
+        Thread.sleep(Config.TIEMPO_COMER);
         
         comedor.release();
         LoggerApocalipsis.registrar("El humano " + humanoID + " sale del comedor");
@@ -48,10 +49,10 @@ public class Refugio {
     public void descansar (String humanoID, boolean herido) throws InterruptedException {
         if (herido) {
             LoggerApocalipsis.registrar("El humano " + humanoID + " esta herido y necesita descansar mas");
-            Thread.sleep(4000);
+            Thread.sleep(Config.TIEMPO_DESCANSO_HERIDO);
         } else {
             LoggerApocalipsis.registrar("El humano " + humanoID + " descansa");
-            Thread.sleep(2000);
+            Thread.sleep(Config.TIEMPO_DESCANSO);
         }
     }
     

@@ -8,6 +8,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import user.apocalipsiszombi2025.util.Config;
 import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 
 /**
@@ -27,7 +28,7 @@ public class Tunel {
 
     public Tunel(int tunelID) {
         this.tunelID = tunelID;
-        this.barreraGrupo = new CyclicBarrier(3);
+        this.barreraGrupo = new CyclicBarrier(Config.GRUPO_SALIDA);
     }
     
     public void esperarGrupoParaSalir(String humanoID) throws InterruptedException {
@@ -74,7 +75,7 @@ public class Tunel {
             ocupado = true;
 
             LoggerApocalipsis.registrar( "El humano " + humanoId + " sale por el Tunel " + tunelID + " hacia el exterior.");
-            Thread.sleep(1000);
+            Thread.sleep(Config.TIEMPO_TUNEL);
             ocupado = false;
 
             if (esperandoEntrar > 0) {

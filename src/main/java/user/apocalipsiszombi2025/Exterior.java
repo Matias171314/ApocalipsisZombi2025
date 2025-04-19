@@ -4,10 +4,10 @@
  */
 package user.apocalipsiszombi2025;
 
+import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 import java.util.Random;
-import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 
 /**
  *

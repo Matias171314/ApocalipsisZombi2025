@@ -5,6 +5,7 @@
 package user.apocalipsiszombi2025;
 
 import java.util.Random;
+import user.apocalipsiszombi2025.util.Config;
 import user.apocalipsiszombi2025.util.LoggerApocalipsis;
 
 /**
@@ -50,14 +51,14 @@ public class Zombi extends Thread {
     }
 
     LoggerApocalipsis.registrar("El zombi " + zombiID + " no encontró humanos en ninguna zona. Espera...");
-    Thread.sleep(rand.nextInt(2000, 3000));
+    Thread.sleep(rand.nextInt(Config.TIEMPO_ESPERA_ZOMBI_MIN, Config.TIEMPO_ESPERA_ZOMBI_MAX));
         
     }
     
     private void atacar(Humano objetivo, Exterior zona) throws InterruptedException {
         LoggerApocalipsis.registrar("El zombi " + zombiID + " ataca al humano " + objetivo.getID());
 
-        Thread.sleep(rand.nextInt(500, 1500));
+        Thread.sleep(rand.nextInt(Config.TIEMPO_ATAQUE_MIN, Config.TIEMPO_ATAQUE_MAX));
 
         boolean defensaExitosa = rand.nextDouble() < (2.0 / 3);
 
@@ -72,7 +73,7 @@ public class Zombi extends Thread {
             zona.notificarMuerte(objetivo);
         }
 
-        Thread.sleep(rand.nextInt(500, 1000)); // pausa tras el ataque
+        Thread.sleep(rand.nextInt(500, Config.TIEMPO_POST_ATAQUE)); // pausa tras el ataque
     }
 
     public String getID() {
